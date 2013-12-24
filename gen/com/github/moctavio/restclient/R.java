@@ -30,7 +30,7 @@ public final class R {
         public static final int output=0x7f080001;
     }
     public static final class layout {
-        public static final int activity_rest_ful_webservice=0x7f030000;
+        public static final int activity_main=0x7f030000;
     }
     public static final class menu {
         public static final int rest_ful_webservice=0x7f070000;
