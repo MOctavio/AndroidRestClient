@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -16,19 +17,19 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.github.moctavio.restclient.R;
-
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
+import android.view.View;	
 import android.view.View.OnClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 
-public class RestFulWebservice extends Activity {
+public class RestFulWebservice extends Activity  {
 
 	/** Called when the activity is first created. */
 	@Override
@@ -58,13 +59,14 @@ public class RestFulWebservice extends Activity {
 		private String Content;
 		private String Error = null;
 
-		TextView output = (TextView) findViewById(R.id.output);
-		TextView jsonParsed = (TextView) findViewById(R.id.jsonParsed);             
+		final TextView output = (TextView) findViewById(R.id.output);
+		final ListView listView = (ListView) findViewById(R.id.listView);
+		final ArrayList<String> list = new ArrayList<String>();		
 
 		/** UI Message */
 		protected void onPreExecute() {
 			Dialog.setMessage("Please wait..");
-			Dialog.show();
+			Dialog.show();		
 		}		
 
 		/** Background process to obtain the JSON data */
@@ -107,7 +109,6 @@ public class RestFulWebservice extends Activity {
 			} else {
 				output.setText( Content );                              
 
-				String OutputData = "";
 				JSONObject jsonResponse;
 
 				try {
@@ -126,33 +127,22 @@ public class RestFulWebservice extends Activity {
 						JSONObject jsonChildNode = jArrayObject.getJSONObject(i);
 
 						/** Fetch nodes according to the JSON response structure*/
-						String id = jsonChildNode.optString("id").toString();
-						String last_name = jsonChildNode.optString("last_name").toString();
-						String first_name = jsonChildNode.optString("first_name").toString();
-						String city = jsonChildNode.optString("city").toString();
-						String country = jsonChildNode.optString("country").toString();
-						String primary_phone = jsonChildNode.optString("primary_phone").toString();
-						String secondary_phone = jsonChildNode.optString("secondary_phone").toString();
-						String email = jsonChildNode.optString("email").toString();
-						String created_at = jsonChildNode.optString("created_at").toString();
-						String updated_at = jsonChildNode.optString("updated_at").toString();
-
-						OutputData += "ID              : "+ id +"  "
-								+ "Last Name       : "+ last_name +"  "
-								+ "Firts Name      : "+ first_name +"  "
-								+ "City            : "+ city +"  " 
-								+ "Country         : "+ country +"  " 
-								+ "Primary Phone   : "+ primary_phone +"  " 
-								+ "Secondary Phone : "+ secondary_phone +"  " 
-								+ "Email           : "+ email +"  " 
-								+ "Created at      : "+ created_at +"  " 
-								+ "Updated at      : "+ updated_at +"  " 
-								+"--------------------------------------------";                                                   
+						list.add("ID: "+jsonChildNode.optString("id").toString());
+						list.add("Last name: "+jsonChildNode.optString("last_name").toString());
+						list.add("First name: "+jsonChildNode.optString("first_name").toString());
+						list.add("City: "+jsonChildNode.optString("city").toString());
+						list.add("Country: "+jsonChildNode.optString("country").toString());
+						list.add("Primary phone: "+jsonChildNode.optString("primary_phone").toString());
+						list.add("Secondary phone: "+jsonChildNode.optString("secondary_phone").toString());
+						list.add("Email: "+jsonChildNode.optString("email").toString());
+						list.add("Created at: "+jsonChildNode.optString("created_at").toString());
+						list.add("Updated at: "+jsonChildNode.optString("updated_at").toString());	
 					}
 
 					/** Show Parsed Output on screen (activity) */
-					jsonParsed.setText( OutputData );
-
+					ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(),R.layout.list_view, list);	
+					listView.setAdapter(adapter);
+					
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}                 
